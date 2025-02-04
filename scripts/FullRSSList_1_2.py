@@ -2,7 +2,7 @@
 FullRSSList_1_2.py
 
 This script takes in articles (posts) from RssArticles_1.py (via `posts`),
-extracts the desired fields (title, summary, link, and published),
+extracts the desired fields (title, summary, link, and published)
 fixes data format issues (like dates), and provides the final list as 'MyTheFinalList'.
 
 Students: 
