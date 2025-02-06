@@ -36,6 +36,18 @@ def gettingNecessaryList():
     
     allitems = []
     
+    for post in posts:
+        try:
+            tempdict = {
+                "title": post.get("title", ""),
+                "summary": post.get("summary", ""),
+                "link": post.get("link", ""),
+                "published": post.get("published", "")
+            }
+            allitems.append(tempdict)
+        except Exception as e:
+            print(f"Fel vid extrahering: {e}")
+
     # TODO: Replace with your actual code, e.g.:
     # for x in posts:
     #     try:
@@ -68,6 +80,14 @@ def ThefinalList():
     #  3. Return finalList
     
     finalList = []
+
+    for item in AllItemsX:
+        title, summary, link, published = item.values()
+        try:
+            published_date = datetime.strptime(published, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            published_date = "Unknown"
+        finalList.append([title, summary, link, str(published_date)])
 
     # TODO: Replace with your code that:
     # - loops over AllItemsX
