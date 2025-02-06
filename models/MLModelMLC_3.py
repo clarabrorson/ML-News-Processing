@@ -30,17 +30,17 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB  # ← Använder MultinomialNB istället
 
 # If needed for your environment:
-nltk.data.path.append('/usr/local/share/nltk_data')
+nltk.data.path.append('C:/Users/clara/AppData/Roaming/nltk_data')
 
 # Suppress warnings for clarity
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
 
 # 1) Load the data
-data_path = "Book1.csv"  # Student: adjust if your CSV is somewhere else
+data_path = "C:/Users/clara/ML/Book1.csv"  # Student: adjust if your CSV is somewhere else
 data_raw = pd.read_csv(data_path)
 
 # 2) Shuffle the data
@@ -69,12 +69,7 @@ data_raw['Heading'] = data_raw['Heading'].apply(removeStopWords)
 stemmer = SnowballStemmer("swedish")
 
 def stemming(sentence):
-    stemSentence = ""
-    for word in sentence.split():
-        stem = stemmer.stem(word)
-        stemSentence += stem
-        stemSentence += " "
-    return stemSentence.strip()
+    return " ".join([stemmer.stem(word) for word in sentence.split()])
 
 # (Optional) If you want to apply stemming, uncomment the next line:
 # data_raw['Heading'] = data_raw['Heading'].apply(stemming)
@@ -88,24 +83,20 @@ test_text = test['Heading']
 vectorizer = TfidfVectorizer(strip_accents='unicode', analyzer='word', ngram_range=(1,3), norm='l2')
 vectorizer.fit(train_text)
 
-x_train = vectorizer.transform(train_text)
-y_train = train.drop(labels = ['Id','Heading'], axis=1)
-
-x_test = vectorizer.transform(test_text)
-y_test = test.drop(labels = ['Id','Heading'], axis=1)
+x_train, x_test = vectorizer.transform(train_text), vectorizer.transform(test_text)
+y_train, y_test = train.drop(columns=['Id', 'Heading']), test.drop(columns=['Id', 'Heading'])
 
 # 6) Setup ML pipeline
-LogReg_pipeline = Pipeline([
-    ('clf', OneVsRestClassifier(LogisticRegression())),
+NB_pipeline = Pipeline([
+    ('clf', OneVsRestClassifier(MultinomialNB()))
 ])
 
 # 7) Hyperparameter Tuning
-C_values = [0.1, 1, 10]
-penalty_values = ['l1', 'l2']
-param_grid = dict(clf__estimator__C=C_values, 
-                  clf__estimator__penalty=penalty_values)
+param_grid = {
+    'clf__estimator__alpha': [0.1, 0.5, 1.0, 5.0, 10.0]  # α (smoothing) för MultinomialNB
+}
 
-grid = GridSearchCV(LogReg_pipeline, param_grid, cv=5, scoring='accuracy')
+grid = GridSearchCV(NB_pipeline, param_grid, cv=5, scoring='accuracy')
 grid.fit(x_train, y_train)
 
 print("Best score: ", grid.best_score_)
