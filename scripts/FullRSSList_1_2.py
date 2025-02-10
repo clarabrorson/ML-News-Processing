@@ -12,7 +12,9 @@ Students:
 
 # 1) Import posts from RssArticles_1
 from RssArticles_1 import posts
-import datetime
+# import datetime
+from datetime import datetime
+
 
 # Pseudo code: 
 # - create a function 'gettingNecessaryList' that loops through posts
