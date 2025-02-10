@@ -12,9 +12,15 @@ Students:
 """
 
 
-from MLModelReturns_4 import validDict
+
 import mysql.connector
 from mysql.connector import Error
+
+#from MLModelReturns_4 import validDict
+
+from MLModelReturns_4 import main
+
+validDict = main()
 
 def db_connection():
     """
@@ -55,7 +61,7 @@ def insert_data(data, cnxn):
 
         # Define the INSERT statement
         sql = """
-        INSERT INTO news (title, summary, link, published, topic)
+        INSERT INTO news (title, summary, link, published, topics)
         VALUES (%s, %s, %s, %s, %s)
         """
 
