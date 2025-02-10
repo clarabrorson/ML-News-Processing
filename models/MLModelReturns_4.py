@@ -15,9 +15,13 @@ Students:
 """
 
 # 1) Imports
-# from FullRSSList_1_2 import MyTheFinalList
-# from MLModelMLC_3 import categories, vectorizer, best_clf_pipeline
-# from RssFeedNewArticle_2 import printdepositlist
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "scripts"))
+
+from scripts.FullRSSList_1_2 import MyTheFinalList
+from MLModelMLC_3 import categories, vectorizer, best_clf_pipeline
+from scripts.RssFeedNewArticle_2 import printdepositlist
 
 import jsonschema
 
