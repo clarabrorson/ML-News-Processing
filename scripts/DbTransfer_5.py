@@ -11,8 +11,10 @@ Students:
    and insert data in a loop or with executemany.
 """
 
-# from MLModelReturns_4 import validDict
+
+from MLModelReturns_4 import validDict
 import mysql.connector
+from mysql.connector import Error
 
 def db_connection():
     """
@@ -22,15 +24,20 @@ def db_connection():
        - return the connection object if successful
        - otherwise handle exceptions and return None
     """
-    # Example placeholder:
-    # cnxn = mysql.connector.connect(
-    #   host="localhost",
-    #   user="root",
-    #   password="password",
-    #   database="my_database"
-    # )
-    # return cnxn
-    pass
+    try:
+        # Establish a connection to the MySQL database
+        cnxn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="javaintegration",
+            database="news"
+        )
+        if cnxn.is_connected():
+            print("Successfully connected to the database")
+            return cnxn
+    except Error as e:
+        print(f"Error connecting to MySQL: {e}")
+        return None
 
 def insert_data(data, cnxn):
     """
@@ -42,15 +49,31 @@ def insert_data(data, cnxn):
       - 'published'
       - 'topic'
     """
-    # Pseudo code:
-    #   1) Create a cursor from cnxn
-    #   2) Define an INSERT statement, e.g.:
-    #      sql = "INSERT INTO news (title, summary, link, published, topic) VALUES (%s, %s, %s, %s, %s)"
-    #   3) Transform data into a list of tuples
-    #   4) Use cursor.executemany(sql, list_of_tuples)
-    #   5) cnxn.commit()
-    #   6) Close the cursor
-    pass
+    try:
+        # Create a cursor from the connection object
+        cursor = cnxn.cursor()
+
+        # Define the INSERT statement
+        sql = """
+        INSERT INTO news (title, summary, link, published, topic)
+        VALUES (%s, %s, %s, %s, %s)
+        """
+
+        # Transform the data into a list of tuples
+        data_tuples = [(d['title'], d['summary'], d['link'], d['published'], ', '.join(d['topics'])) for d in data]
+
+        # Use cursor.executemany to insert the data
+        cursor.executemany(sql, data_tuples)
+
+        # Commit the transaction
+        cnxn.commit()
+        print(f"{cursor.rowcount} records inserted successfully.")
+
+        # Close the cursor
+        cursor.close()
+    except Error as e:
+        print(f"Error inserting data: {e}")
+        cnxn.rollback()  # Rollback in case of error
 
 def main():
     # 1. Connect to the DB
@@ -58,8 +81,8 @@ def main():
     
     if cnxn:
         # 2. Insert data
-        # data = validDict  # from MLModelReturns_4
-        # insert_data(data, cnxn)
+        data = validDict  # from MLModelReturns_4
+        insert_data(data, cnxn)
         
         # 3. Close the connection
         cnxn.close()
