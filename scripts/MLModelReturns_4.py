@@ -23,6 +23,7 @@ from FullRSSList_1_2 import AllItemsX as MyTheFinalList
 from MLModelMLC_3 import categories, vectorizer, best_clf_pipeline
 from RssFeedNewArticle_2 import printdepositlist
 
+
 def main():
     """
     1. Retrieve the text from printdepositlist (title + summary)
@@ -33,7 +34,7 @@ def main():
     """
 
     # 1. Retrieve the final text from 'printdepositlist' (title + summary)
-    my_text = printdepositlist
+    my_text = [f"{item['title']} {item['summary']}" for item in MyTheFinalList]
 
     # 2. Remove empty strings from 'my_text' if necessary
     my_text_no_empty = [t for t in my_text if t.strip() != ""]
@@ -62,7 +63,7 @@ def main():
     #    Ensure that each classified text matches the corresponding item in MyTheFinalList
     combinedList = []
     for i, article in enumerate(MyTheFinalList):
-        title, summary, link, published = article
+        title, summary, link, published = article.values()
         topics = results[i] if i < len(results) else ["Unknown Category"]
         combinedList.append([title, summary, link, published, topics])
 
@@ -70,28 +71,7 @@ def main():
     key_list = ['title', 'summary', 'link', 'published', 'topics']
     finalDict = [dict(zip(key_list, v)) for v in combinedList]
 
-    # 8. Validate the final dictionaries using JSON schema
-    schema = {
-        "type": "object",
-        "properties": {
-            "title": {"type": "string"},
-            "summary": {"type": "string"},
-            "link": {"type": "string"},
-            "published": {"type": "string"},
-            "topics": {"type": "array", "items": {"type": "string"}}
-        },
-        "required": ["title", "summary", "link", "published", "topics"]
-    }
-
-    valid_list = []
-    for item in finalDict:
-        try:
-            jsonschema.validate(instance=item, schema=schema)
-            valid_list.append(item)
-        except jsonschema.exceptions.ValidationError as e:
-            print(f"Validation error: {e}")
-
-    return valid_list  # Important! Returning validDict
+    return finalDict
 
 # 9. Run the script and store results in validDict
 if __name__ == "__main__":

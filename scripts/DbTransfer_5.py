@@ -22,6 +22,12 @@ from MLModelReturns_4 import main
 
 validDict = main()
 
+# Lägg till utskrift för att kontrollera den första artikeln
+if validDict:
+    print("First classified article:", validDict[0])  # Skriv ut den första klassificerade artikeln
+else:
+    print("No classified articles found.")
+
 def db_connection():
     """
     Create and return a database connection.
@@ -45,6 +51,22 @@ def db_connection():
         print(f"Error connecting to MySQL: {e}")
         return None
 
+from datetime import datetime
+
+def convert_to_mysql_date(date_str):
+    """
+    Convert a date string to a MySQL-compatible date format (YYYY-MM-DD).
+    If the string is already a valid date, return it as is.
+    """
+    try:
+        # Attempt to parse the date string into a datetime object
+        # Adjust the format string to match your date string's format
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        return date_obj.strftime("%Y-%m-%d")
+    except ValueError:
+        print(f"Invalid date format for '{date_str}'. Setting it to NULL.")
+        return None  # Return None if the date format is invalid
+
 def insert_data(data, cnxn):
     """
     Insert the provided data (list of dict) into the 'news' table.
@@ -66,7 +88,7 @@ def insert_data(data, cnxn):
         """
 
         # Transform the data into a list of tuples
-        data_tuples = [(d['title'], d['summary'], d['link'], d['published'], ', '.join(d['topics'])) for d in data]
+        data_tuples = [(d['title'], d['summary'], d['link'], convert_to_mysql_date(d['published']), ', '.join(d['topics'])) for d in data]
 
         # Use cursor.executemany to insert the data
         cursor.executemany(sql, data_tuples)
@@ -80,6 +102,7 @@ def insert_data(data, cnxn):
     except Error as e:
         print(f"Error inserting data: {e}")
         cnxn.rollback()  # Rollback in case of error
+
 
 def main():
     # 1. Connect to the DB
