@@ -58,14 +58,22 @@ def convert_to_mysql_date(date_str):
     Convert a date string to a MySQL-compatible date format (YYYY-MM-DD).
     If the string is already a valid date, return it as is.
     """
-    try:
-        # Attempt to parse the date string into a datetime object
-        # Adjust the format string to match your date string's format
-        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-        return date_obj.strftime("%Y-%m-%d")
-    except ValueError:
-        print(f"Invalid date format for '{date_str}'. Setting it to NULL.")
-        return None  # Return None if the date format is invalid
+    date_formats = [
+        "%a, %d %b %Y %H:%M:%S %z",  # e.g., Tue, 11 Feb 2025 05:51:26 +0100
+        "%Y-%m-%dT%H:%M:%S%z",       # e.g., 2025-02-11T09:39:00+01:00
+        "%Y-%m-%d %H:%M:%S",         # e.g., 2025-02-11 09:39:00
+        "%a, %d %b %Y %H:%M:%S GMT"  # e.g., Tue, 11 Feb 2025 01:36:09 GMT
+    ]
+    
+    for fmt in date_formats:
+        try:
+            date_obj = datetime.strptime(date_str, fmt)
+            return date_obj.strftime("%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            continue
+    
+    print(f"Invalid date format for '{date_str}'. Setting it to NULL.")
+    return None  # Return None if the date format is invalid
 
 def insert_data(data, cnxn):
     """
