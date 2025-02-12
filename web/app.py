@@ -1,8 +1,20 @@
 import streamlit as st
 from db import fetch_data
 from ui import display_news, display_filter_search
+import os
+
+from PIL import Image
+
+# Testa att visa bilden direkt i appen
+def show_image():
+    image = Image.open("news.jpg") 
+    st.image(image, use_container_width=True)  # Använd den nya parameteren
+
 
 def main():
+    
+    show_image()
+
     st.title("News Dashboard")
 
     # Hämta data från databasen en gång och lagra i session_state om det inte redan finns
