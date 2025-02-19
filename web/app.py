@@ -14,7 +14,7 @@ def show_image():
     
     with col2:  # Placera bilden i mittenkolumnen
         st.image(image, width=500)
-
+        st.markdown("<h1 style='text-align: center; font-weight: normal; font-size: 36px;'>News Hub</h1>", unsafe_allow_html=True)
 
 def set_background_and_text_color():
     st.markdown(
@@ -33,7 +33,7 @@ def main():
     set_background_and_text_color()
     show_image()
 
-    st.title("News Dashboard")
+    #st.title("News Hub")
 
     # Hämta data från databasen en gång och lagra i session_state om det inte redan finns
     if "data" not in st.session_state:
