@@ -1,6 +1,20 @@
 import streamlit as st
 
+def set_label_text_color():
+    st.markdown(
+        """
+        <style>
+        .stSelectbox label, .stTextInput label {
+            color: black;  /* Set label text color to black */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 def display_filter_search(data):
+    set_label_text_color()  # Apply the custom CSS
+
     # Skapa en lista med alla unika kategorier i datan (exkluderar None)
     categories = ["All"] + sorted(set(row["topics"] for row in data if row["topics"] is not None))
 
@@ -27,9 +41,18 @@ def display_news(data):
     # Filtrera bort rader där 'published' är None
     filtered_data = [row for row in filtered_data if row["published"] is not None]
 
-    # Visa de filtrerade nyheterna
-    for row in filtered_data:
-        st.subheader(row["title"])
-        st.write(row["summary"])
-        st.write(f"🗓️ Published: {row['published']} | 🏷️ Category: {row['topics']}")
-        st.write("---")
+    # Visa de filtrerade nyheterna i kolumner och kort
+    cols = st.columns(3)  # Skapa tre kolumner
+
+    for idx, row in enumerate(filtered_data):
+        with cols[idx % 3]:  # Fördela artiklarna över kolumnerna
+            st.markdown(
+                f"""
+                <div style="border: 1px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
+                    <h3>{row["title"]}</h3>
+                    <p>{row["summary"]}</p>
+                    <p><strong>🗓️ Published:</strong> {row['published']} | <strong>🏷️ Category:</strong> {row['topics']}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )

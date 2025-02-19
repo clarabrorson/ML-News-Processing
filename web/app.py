@@ -7,12 +7,24 @@ from PIL import Image
 
 # Testa att visa bilden direkt i appen
 def show_image():
-    image = Image.open("news.jpg") 
+    image = Image.open("news.jpg")
     st.image(image, use_container_width=True)  # Använd den nya parameteren
 
+def set_background_and_text_color():
+    st.markdown(
+        """
+        <style>
+        body, .stApp {
+            background-color: white;
+            color: black;  /* Set text color to black */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 def main():
-    
+    set_background_and_text_color()
     show_image()
 
     st.title("News Dashboard")
