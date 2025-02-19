@@ -55,7 +55,8 @@ def display_news(data):
         with cols[idx % 3]:  # Fördela artiklarna över kolumnerna
             st.markdown(
                 f"""
-                <div class="news-card" style="border: 3px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
+                <div class="news-card" style="border: 3px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 10px;);
+">
                     <h3>{row["title"]}</h3>
                     <p>{row["summary"]}</p>
                     <p><strong>🗓️ Published:</strong> {row['published']}</p>
