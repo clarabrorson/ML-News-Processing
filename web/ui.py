@@ -7,6 +7,12 @@ def set_label_text_color():
         .stSelectbox label, .stTextInput label {
             color: black;  /* Set label text color to black */
         }
+        .news-card h3 {
+            font-size: 1.2em;  /* Set title font size */
+        }
+        .news-card p {
+            font-size: 0.9em;  /* Set summary font size */
+        }
         </style>
         """,
         unsafe_allow_html=True
@@ -48,10 +54,11 @@ def display_news(data):
         with cols[idx % 3]:  # Fördela artiklarna över kolumnerna
             st.markdown(
                 f"""
-                <div style="border: 1px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
+                <div class="news-card" style="border: 1px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
                     <h3>{row["title"]}</h3>
                     <p>{row["summary"]}</p>
-                    <p><strong>🗓️ Published:</strong> {row['published']} | <strong>🏷️ Category:</strong> {row['topics']}</p>
+                    <p><strong>🗓️ Published:</strong> {row['published']}</p>
+                    <p><strong>🏷️ Category:</strong> {row['topics']}</p>
                 </div>
                 """,
                 unsafe_allow_html=True

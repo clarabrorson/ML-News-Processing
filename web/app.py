@@ -8,7 +8,13 @@ from PIL import Image
 # Testa att visa bilden direkt i appen
 def show_image():
     image = Image.open("news.jpg")
-    st.image(image, use_container_width=True)  # Använd den nya parameteren
+
+    # Skapar tre kolumner, mittenkolumnen används för att visa bilden centrerad
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:  # Placera bilden i mittenkolumnen
+        st.image(image, width=500)
+
 
 def set_background_and_text_color():
     st.markdown(
