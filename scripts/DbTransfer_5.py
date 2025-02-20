@@ -7,8 +7,6 @@ The script can be run independently to transfer the data from the ML model to th
 
 """
 
-
-
 import mysql.connector
 from mysql.connector import Error
 from MLModelReturns_4 import main
