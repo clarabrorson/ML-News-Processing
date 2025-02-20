@@ -1,57 +1,42 @@
 """
-MLModelReturns_4.py
+This script is used to classify the articles from the RSS feed. It uses the ML model trained in the previous step to classify the articles.
+The script reads the articles from the RSS feed, preprocesses them, and then uses the ML model to classify them.
+The script then prints the classified articles to the console.
 
-This script will:
-  - Import 'MyTheFinalList' from FullRSSList_1_2.py
-  - Import the trained model (best_clf_pipeline) + supporting objects (categories, vectorizer, etc.) 
-    from MLModelMLC_3.py
-  - Use the model to predict categories for the newly fetched RSS articles.
-  - Combine the predictions with the final list from 'MyTheFinalList' and possibly produce a
-    validated dictionary (validDict).
+def main():
+    This function reads the articles from the RSS feed, preprocesses them, and uses the ML model to classify them.
+    It returns a list of dictionaries, where each dictionary represents a classified article.
 
-Students:
- - Complete the pseudo code to transform text, get predictions,
-   and merge them with the 'MyTheFinalList'.
+if __name__ == "__main__":
+    This block of code calls the main function and prints the classified articles to the console.
+    
 """
 
 import sys
 import os
 import jsonschema
 
-# Import required scripts
 from FullRSSList_1_2 import AllItemsX as MyTheFinalList
 from MLModelMLC_3 import categories, vectorizer, best_clf_pipeline
 from RssFeedNewArticle_2 import printdepositlist
 
 
 def main():
-    """
-    1. Retrieve the text from printdepositlist (title + summary)
-    2. Transform the text into the same vectorized format as the training data
-    3. Use the trained model to classify the articles
-    4. Merge classifications with 'MyTheFinalList'
-    5. Validate the final structured data
-    """
 
-    # 1. Retrieve the final text from 'printdepositlist' (title + summary)
     my_text = [f"{item['title']} {item['summary']}" for item in MyTheFinalList]
 
-    # 2. Remove empty strings from 'my_text' if necessary
     my_text_no_empty = [t for t in my_text if t.strip() != ""]
 
     if not my_text_no_empty:
         print("No text found for classification!")
         return []
 
-    # 3. Transform text using the same vectorizer from training
     my_text_transformed = vectorizer.transform(my_text_no_empty)
 
-    # 4. Use best_clf_pipeline to get probability predictions
     predictions = best_clf_pipeline.predict_proba(my_text_transformed)
 
-    # 5. Compare each probability to a threshold to determine the predicted categories
     threshold = 0.3
-    results = []  # List of classified categories per text
+    results = [] 
 
     for idx, pvector in enumerate(predictions):
         predicted_categories = [
@@ -59,25 +44,23 @@ def main():
         ]
         results.append(predicted_categories if predicted_categories else ["Unknown Category"])
 
-    # 6. Combine 'results' with 'MyTheFinalList'
-    #    Ensure that each classified text matches the corresponding item in MyTheFinalList
+
     combinedList = []
     for i, article in enumerate(MyTheFinalList):
         title, summary, link, published = article.values()
         topics = results[i] if i < len(results) else ["Unknown Category"]
         combinedList.append([title, summary, link, published, topics])
 
-    # 7. Create the final list of dictionaries
+    
     key_list = ['title', 'summary', 'link', 'published', 'topics']
     finalDict = [dict(zip(key_list, v)) for v in combinedList]
 
     return finalDict
 
-# 9. Run the script and store results in validDict
+
 if __name__ == "__main__":
-    validDict = main()  # Ensure validDict is created by calling main()
+    validDict = main()  
     
-    # 10. Print an example of the classified articles
     if validDict:
         print("Example of a classified article:", validDict[0])
         print(f"Total number of classified articles: {len(validDict)}")
