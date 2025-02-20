@@ -1,5 +1,12 @@
 import feedparser
 
+"""
+This script reads RSS feeds from different news sources and stores the articles in a list.
+A for loop iterates over the RSS_URL list and reads the RSS feed using the feedparser library.
+The entries are stored in the posts list.
+
+"""
+
 RSS_URL = ['http://www.dn.se/nyheter/m/rss/',
            'https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/', 
            'https://feeds.expressen.se/nyheter/',
@@ -9,7 +16,6 @@ RSS_URL = ['http://www.dn.se/nyheter/m/rss/',
 
 posts = []
 
-# Iterera över varje URL i RSS_URL-listan
 for url in RSS_URL:
     feed = feedparser.parse(url)
     for entry in feed.entries:
